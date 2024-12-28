@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -31,6 +32,8 @@ jobs:
 
     - name: Install dependencies
       run: go mod tidy
+      working-directory: mergedMiningProxy
 
     - name: Run tests
       run: go test ./...
+      working-directory: mergedMiningProxy
