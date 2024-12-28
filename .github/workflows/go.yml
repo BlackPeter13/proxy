@@ -21,7 +21,7 @@ jobs:
         go-version: '1.19'
 
     - name: Set up working directory
-      run: mkdir -p /work/golang/mergedMiningProxy
+      run: sudo mkdir -p /work/golang/mergedMiningProxy
 
     - name: Initialize Go module if not present
       run: |
