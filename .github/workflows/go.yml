@@ -32,7 +32,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        mkdir -p /work/golang
+        sudo mkdir -p /work/golang
         export GOPATH=/work/golang
         go mod init
         go mod tidy
