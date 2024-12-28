@@ -20,6 +20,18 @@ jobs:
       with:
         go-version: '1.19'
 
+    - name: Set up working directory
+      run: mkdir -p /work/golang/mergedMiningProxy
+
+    - name: Initialize Go module if not present
+      run: |
+        cd /work/golang/mergedMiningProxy
+        if [ ! -f go.mod ]; then
+          go mod init github.com/BlackPeter13/proxy/mergedMiningProxy
+          go mod tidy
+        fi
+      working-directory: mergedMiningProxy
+
     - name: Cache Go modules
       uses: actions/cache@v3
       with:
@@ -31,11 +43,7 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Install dependencies
-      run: |
-        sudo mkdir -p /work/golang
-        export GOPATH=/work/golang
-        go mod init
-        go mod tidy
+      run: go mod tidy
       working-directory: mergedMiningProxy
 
     - name: Run tests
