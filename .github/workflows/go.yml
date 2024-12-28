@@ -1,4 +1,4 @@
-name: Go
+name: Merged Mining Proxy CI
 
 on:
   push:
@@ -31,7 +31,11 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Install dependencies
-      run: go mod tidy
+      run: |
+        mkdir -p /work/golang
+        export GOPATH=/work/golang
+        go mod init
+        go mod tidy
       working-directory: mergedMiningProxy
 
     - name: Run tests
