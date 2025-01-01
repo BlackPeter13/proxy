@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merged Mining Proxy Dashboard</title>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Merged Mining Proxy Dashboard</h1>
+    <div>
+        <h2>Logs</h2>
+        <div id="logs" style="height: 200px; overflow-y: scroll; border: 1px solid black; padding: 10px;"></div>
+    </div>
+    <div>
+        <h2>Mining Stats</h2>
+        <canvas id="statsChart"></canvas>
+    </div>
+
+    <script>
+        const socket = io("http://localhost:5000");
+        const logsDiv = document.getElementById("logs");
+
+        socket.on("logUpdate", (data) => {
+            const log = document.createElement("div");
+            log.textContent = data.message;
+            logsDiv.appendChild(log);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        });
+
+        const ctx = document.getElementById("statsChart").getContext("2d");
+        const statsChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Hash Rate (MH/s)",
+                    data: [],
+                    borderColor: "blue",
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: "Time" } },
+                    y: { title: { display: true, text: "Hash Rate" } }
+                }
+            }
+        });
+
+        socket.on("statsUpdate", (data) => {
+            const time = new Date().toLocaleTimeString();
+            statsChart.data.labels.push(time);
+            statsChart.data.datasets[0].data.push(data.hashRate);
+
+            if (statsChart.data.labels.length > 20) {
+                statsChart.data.labels.shift();
+                statsChart.data.datasets[0].data.shift();
+            }
+            statsChart.update();
+        });
+    </script>
+</body>
+</html>
