@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merged Mining Proxy Dashboard</title>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Merged Mining Proxy Dashboard</h1>
+    <div>
+        <h2>Logs</h2>
+        <div id="logs" style="height: 200px; overflow-y: scroll; border: 1px solid black; padding: 10px;"></div>
+    </div>
+    <div>
+        <h2>Mining Stats - BTC</h2>
+        <canvas id="btcChart"></canvas>
+    </div>
+    <div>
+        <h2>Mining Stats - BCH</h2>
+        <canvas id="bchChart"></canvas>
+    </div>
+    <div>
+        <h2>Mining Stats - BCA</h2>
+        <canvas id="bcaChart"></canvas>
+    </div>
+
+    <script>
+        const socket = io("http://localhost:5000");
+        const logsDiv = document.getElementById("logs");
+
+        // Logs
+        socket.on("log_update", (data) => {
+            const log = document.createElement("div");
+            log.textContent = data.message;
+            logsDiv.appendChild(log);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        });
+
+        // Initialize Charts
+        const createChart = (ctx, label) => new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: label,
+                    data: [],
+                    borderColor: "blue",
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: "Time" } },
+                    y: { title: { display: true, text: "Hash Rate (MH/s)" } }
+                }
+            }
+        });
+
+        const btcChart = createChart(document.getElementById("btcChart").getContext("2d"), "BTC Hash Rate");
+        const bchChart = createChart(document.getElementById("bchChart").getContext("2d"), "BCH Hash Rate");
+        const bcaChart = createChart(document.getElementById("bcaChart").getContext("2d"), "BCA Hash Rate");
+
+        const charts = {
+            BTC: btcChart,
+            BCH: bchChart,
+            BCA: bcaChart
+        };
+
+        // Update Charts
+        socket.on("stats_update", (data) => {
+            const chart = charts[data.coin];
+            const time = data.data.time;
+            const hashRate = data.data.hash_rate;
+
+            chart.data.labels.push(time);
+            chart.data.datasets[0].data.push(hashRate);
+
+            if (chart.data.labels.length > 180) {  // Keep a 3-hour history
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+            }
+
+            chart.update();
+        });
+    </script>
+</body>
+</html>

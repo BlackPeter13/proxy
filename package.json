@@ -1,0 +1,15 @@
+
+{
+    "name": "merged-mining-proxy",
+    "version": "1.0.0",
+    "description": "Merged Mining Proxy with Real-Time Dashboard",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "http": "^0.0.1-security",
+        "socket.io": "^4.5.1"
+    }
+}
