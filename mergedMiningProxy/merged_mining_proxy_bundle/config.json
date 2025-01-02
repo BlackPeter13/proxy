@@ -1,9 +1,0 @@
-
-{
-    "coins": {
-        "BTC": {"host": "btc-pool.example.com", "port": 3333},
-        "BCH": {"host": "bch-pool.example.com", "port": 3334},
-        "BCA": {"host": "bca-pool.example.com", "port": 3335}
-    },
-    "proxy": {"host": "0.0.0.0", "port": 8080}
-}
