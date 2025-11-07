@@ -13,7 +13,7 @@ The project allows miners to mine multiple cryptocurrencies (e.g., BTC, BCH, BCA
     Graphs for BTC, BCH, and BCA hash rates are displayed in the dashboard.
     Each graph shows historical hash rates for the past 180 minutes, updated every 1 minute.
 
-4. Web-Based Dashboard
+4. Web-Based Dashboard.
 
     The dashboard is accessible via any browser and provides:
         Logs section: Displays miner connections and key events.
